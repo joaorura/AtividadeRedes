@@ -1,4 +1,4 @@
-import server.interface as interface
+import interface as interface
 
 
 def main():

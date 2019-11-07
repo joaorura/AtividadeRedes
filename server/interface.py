@@ -1,4 +1,4 @@
-from server.socket import Socket
+from server import Socket
 
 
 def create_socket():
@@ -18,7 +18,7 @@ def create_socket():
 
 def out():
     print("\n\nLeaving the program")
-    pass
+    exit()
 
 
 presentation = "0: Create a server thread\n" \

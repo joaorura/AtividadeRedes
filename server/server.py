@@ -10,15 +10,22 @@ class Lister(Thread):
         self.address = address
 
     def run(self):
-        print("New connection of " + self.address)
+        print(f'New connection of {self.address}\n\n')
 
         while True:
-            response = self.server_input.recv(1024)
+            try:
+                response = self.server_input.recv(1024)
+            except ConnectionResetError:
+                break
+
+            response = response.decode()
             response = response.rstrip()
-            if response != "sair":
-                print("Message of client:", response)
+            if response != "exit":
+                print(f"Message of client [{self.address[1]}]:", response)
             else:
                 break
+
+        print('End connection')
 
 
 class Socket:
@@ -27,14 +34,14 @@ class Socket:
             raise ValueError()
 
         self.address = (ip_address, port)
-        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server_socket = socket.socket()
         self.server_socket.bind(self.address)
 
     def start_listen(self):
         print("\n\nStart Listening")
-        
+        self.server_socket.listen(1)
+
         while True:
-            self.server_socket.listen(1)
             aux = self.server_socket.accept()
-            lister = Lister(aux)
-            lister.run()
+            lister = Lister(aux[0], aux[1])
+            lister.start()
